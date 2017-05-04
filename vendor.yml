@@ -1,6 +1,8 @@
 vendors:
 - path: github.com/Sirupsen/logrus
   rev: 5b60b3d3ee017ed00bcd0225fcca7acab767844b
+- path: github.com/Unknwon/com
+  rev: 0db4a625e949e956314d7d1adea9bf82384cc10c
 - path: github.com/facebookgo/clock
   rev: 600d898af40aa09a7a93ecb9265d87b0504b6f03
 - path: github.com/facebookgo/grace

@@ -3,14 +3,14 @@ package router
 import (
 	"net/http"
 
-	// "github.com/webhippie/ldap-proxy/assets"
+	"github.com/gin-contrib/pprof"
+	"github.com/gin-gonic/gin"
+	"github.com/webhippie/ldap-proxy/assets"
 	"github.com/webhippie/ldap-proxy/config"
 	"github.com/webhippie/ldap-proxy/router/middleware/header"
 	"github.com/webhippie/ldap-proxy/router/middleware/logger"
 	"github.com/webhippie/ldap-proxy/router/middleware/recovery"
-	// "github.com/webhippie/ldap-proxy/templates"
-	"github.com/gin-contrib/pprof"
-	"github.com/gin-gonic/gin"
+	"github.com/webhippie/ldap-proxy/templates"
 )
 
 // Load initializes the routing of the application.
@@ -23,9 +23,9 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 	e := gin.New()
 
-	// e.SetHTMLTemplate(
-	// 	templates.Load(),
-	// )
+	e.SetHTMLTemplate(
+		templates.Load(),
+	)
 
 	e.Use(middleware...)
 	e.Use(logger.SetLogger())
@@ -35,16 +35,24 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	e.Use(header.SetSecure())
 	e.Use(header.SetVersion())
 
-	// e.StaticFS(
-	// 	"/assets",
-	// 	assets.Load(),
-	// )
+	e.StaticFS(
+		"/ldap-proxy/assets",
+		assets.Load(),
+	)
+
+	e.NoRoute(func(c *gin.Context) {
+		c.HTML(
+			http.StatusOK,
+			"index.html",
+			gin.H{},
+		)
+	})
 
 	if config.Server.Pprof {
 		pprof.Register(
 			e,
 			&pprof.Options{
-				RoutePrefix: "/debug/pprof",
+				RoutePrefix: "/ldap-proxy/debug/pprof",
 			},
 		)
 	}

@@ -1,19 +1,18 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var Webpack = require('webpack');
 
 module.exports = {
   entry: {
     app: [
-      './src/index.js'
+      './assets/src/index.js'
     ]
   },
 
   output: {
-    path: require('path').resolve(__dirname, 'assets'),
-    filename: 'scripts/application.js',
-    publicPath: '/assets/'
+    path: require('path').resolve(__dirname, 'assets', 'dist'),
+    filename: 'proxy.js',
+    publicPath: '/ldap-proxy/assets/'
   },
 
   devtool: 'source-map',
@@ -21,8 +20,7 @@ module.exports = {
   resolve: {
     extensions: [
       '',
-      '.js',
-      '.vue'
+      '.js'
     ]
   },
 
@@ -43,10 +41,6 @@ module.exports = {
         loader: ExtractTextPlugin.extract(
           'css?sourceMap!less?sourceMap'
         )
-      },
-      {
-        test: /\.vue$/,
-        loader: 'vue'
       },
       {
         test: /index\.html$/,
@@ -82,26 +76,13 @@ module.exports = {
   },
 
   plugins: [
-    new Webpack.ProvidePlugin({
-      'jQuery': 'jquery',
-      '$': 'jquery',
-      'Tether': 'tether'
-    }),
     new ExtractTextPlugin(
-      'styles/application.css'
+      'proxy.css'
     ),
     new CopyWebpackPlugin([{
-      from: 'src/images',
-      to: 'images'
+      from: 'assets/src/images',
+      to: ''
     }]),
-    new HtmlWebpackPlugin({
-      template: 'src/index.html.ejs',
-      inject: false,
-      minify: {
-        html5: true,
-        collapseWhitespace: true
-      }
-    }),
     new Webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         process.env.NODE_ENV || 'development'

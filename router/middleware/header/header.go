@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/webhippie/ldap-proxy/config"
 	"github.com/gin-gonic/gin"
+	"github.com/webhippie/ldap-proxy/config"
 )
 
 // SetCache writes required cache headers to all requests.

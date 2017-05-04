@@ -54,6 +54,13 @@ func Server() *cli.Command {
 				EnvVars:     []string{"LDAP_PROXY_TEMPLATES"},
 				Destination: &config.Server.Templates,
 			},
+			&cli.StringFlag{
+				Name:        "assets",
+				Value:       "",
+				Usage:       "Path to custom assets",
+				EnvVars:     []string{"LDAP_PROXY_ASSETS"},
+				Destination: &config.Server.Assets,
+			},
 		},
 		Action: func(c *cli.Context) error {
 			logrus.Infof("Starting on %s", config.Server.Addr)

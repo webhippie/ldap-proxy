@@ -5,6 +5,7 @@ type server struct {
 	Cert      string
 	Key       string
 	Templates string
+	Assets    string
 	Pprof     bool
 }
 
