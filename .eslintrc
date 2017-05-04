@@ -1,0 +1,10 @@
+{
+  "extends": "vue",
+  "plugins": [],
+  "rules": {
+  },
+  "globals": {
+    "localStorage": true,
+    "window": true
+  }
+}
