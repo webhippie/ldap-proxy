@@ -17,9 +17,11 @@ func Load() http.FileSystem {
 	return ChainedFS{}
 }
 
+// ChainedFS is a simple HTTP filesystem including custom path.
 type ChainedFS struct {
 }
 
+// Open just implements the HTTP filesystem interface.
 func (c ChainedFS) Open(origPath string) (http.File, error) {
 	if config.Server.Assets != "" {
 		if com.IsDir(config.Server.Assets) {
