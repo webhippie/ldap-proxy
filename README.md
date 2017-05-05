@@ -9,7 +9,7 @@
 
 **This project is under heavy development, it's not in a working state yet!**
 
-TBD
+A reverse proxy and static file server that provides an authentication layer via LDAP to any web application that doesn't support it natively.
 
 
 ## Install
