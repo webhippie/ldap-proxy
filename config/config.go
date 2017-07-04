@@ -6,13 +6,29 @@ type server struct {
 	Key       string
 	Templates string
 	Assets    string
+	Endpoint  string
 	Pprof     bool
+}
+
+type ldap struct {
+	Addr         string
+	BindUsername string
+	BindPassword string
+	BaseDN       string
+	FilterDN     string
+	UserAttr     string
+	UserHeader   string
+	MailAttr     string
+	MailHeader   string
 }
 
 var (
 	// Debug represents the flag to enable or disable debug logging.
 	Debug bool
 
-	// Server represents the informations about the server bindings.
+	// Server represents the information about the server bindings.
 	Server = &server{}
+
+	// LDAP represents the information about the ldap server bindings.
+	LDAP = &ldap{}
 )
