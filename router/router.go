@@ -40,6 +40,11 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 		assets.Load(),
 	)
 
+	root := e.Group("/ldap-proxy")
+	{
+		root.GET("/ping", ping)
+	}
+
 	e.NoRoute(func(c *gin.Context) {
 		c.HTML(
 			http.StatusOK,
@@ -58,4 +63,13 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	}
 
 	return e
+}
+
+func ping(c *gin.Context) {
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"message": "pong",
+		},
+	)
 }
