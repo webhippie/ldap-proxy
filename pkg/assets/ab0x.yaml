@@ -1,0 +1,14 @@
+pkg: "assets"
+dest: "."
+fmt: true
+
+compression:
+  compress: true
+
+custom:
+  - files:
+    - "../../assets/"
+    base: "../../assets/"
+    prefix: ""
+    exclude:
+      - ".DS_Store"

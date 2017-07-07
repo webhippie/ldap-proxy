@@ -5,12 +5,12 @@ var Webpack = require('webpack');
 module.exports = {
   entry: {
     app: [
-      './assets/src/index.js'
+      './ui/index.js'
     ]
   },
 
   output: {
-    path: require('path').resolve(__dirname, 'assets', 'dist'),
+    path: require('path').resolve(__dirname, 'assets'),
     filename: 'proxy.js',
     publicPath: '/ldap-proxy/assets/'
   },
@@ -43,28 +43,24 @@ module.exports = {
         )
       },
       {
-        test: /index\.html$/,
-        loader: 'file?name=[name].[ext]'
-      },
-      {
         test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[ext]&mimetype=application/font-woff'
+        loader: 'file?name=[name].[ext]&mimetype=application/font-woff'
       },
       {
         test: /\.otf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[ext]&mimetype=application/x-font-opentype'
+        loader: 'file?name=[name].[ext]&mimetype=application/x-font-opentype'
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[ext]&mimetype=image/svg+xml'
+        loader: 'file?name=[name].[ext]&mimetype=image/svg+xml'
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[ext]&mimetype=application/octet-stream'
+        loader: 'file?name=[name].[ext]&mimetype=application/octet-stream'
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file?name=fonts/[name].[ext]&mimetype=application/vnd.ms-fontobject'
+        loader: 'file?name=[name].[ext]&mimetype=application/vnd.ms-fontobject'
       }
     ]
   },
@@ -80,7 +76,7 @@ module.exports = {
       'proxy.css'
     ),
     new CopyWebpackPlugin([{
-      from: 'assets/src/images',
+      from: 'ui/images',
       to: ''
     }]),
     new Webpack.DefinePlugin({

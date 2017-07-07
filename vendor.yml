@@ -1,8 +1,10 @@
 vendors:
 - path: github.com/Sirupsen/logrus
-  rev: 5b60b3d3ee017ed00bcd0225fcca7acab767844b
+  rev: 59d0ca41e5faad81cac03f7a7d84ba80d9cc9673
 - path: github.com/Unknwon/com
   rev: 0db4a625e949e956314d7d1adea9bf82384cc10c
+- path: github.com/beorn7/perks
+  rev: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
 - path: github.com/facebookgo/clock
   rev: 600d898af40aa09a7a93ecb9265d87b0504b6f03
 - path: github.com/facebookgo/grace
@@ -11,22 +13,36 @@ vendors:
   rev: a3b1354551a26449fbe05f5d855937f6e7acbd71
 - path: github.com/facebookgo/stats
   rev: 1b76add642e42c6ffba7211ad7b3939ce654526e
-- path: github.com/gin-contrib/pprof
-  rev: cea200e02ddddca4b843d75d32aa13c413549de9
+- path: github.com/gin-contrib/sse
+  rev: 22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae
 - path: github.com/gin-gonic/gin
-  rev: d5b353c5d5a560322e6d96121c814115562501f7
+  rev: 0c3726b2061604995defd15bbd673dc4d7065e1c
+- path: github.com/go-chi/chi
+  rev: 316a2378f7d5e8b76526c5dfc44b33ae892362a7
 - path: github.com/golang/protobuf
-  rev: 18c9bb3261723cd5401db4d0c9fbc5c3b6c70fe8
+  rev: 6a1fa9404c0aebf36c879bc50152edcc953910d2
 - path: github.com/joho/godotenv
-  rev: 325433c502d409f3c3dc820098fb0cfe38d98dc7
-- path: github.com/manucorporat/sse
-  rev: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
+  rev: 3ddb2792f3923947290c4932990136e17852a078
 - path: github.com/mattn/go-isatty
   rev: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- path: github.com/matttproud/golang_protobuf_extensions
+  rev: c12348ce28de40eed0136aa2b644d0ee0650e56c
+- path: github.com/prometheus/client_golang
+  rev: 26b897001974f2b4ee6688377873e4d6f61d533c
+- path: github.com/prometheus/client_model
+  rev: 6f3806018612930941127f2a7c6c453ba2c527d2
+- path: github.com/prometheus/common
+  rev: 3e6a7635bac6573d43f49f97b47eb9bda195dba8
+- path: github.com/prometheus/procfs
+  rev: e645f4e5aaa8506fc71d6edbc5c4ff02c04c46f2
+- path: github.com/ugorji/go
+  rev: 5efa3251c7f7d05e5d9704a69a984ec9f1386a40
+- path: github.com/unrolled/render
+  rev: 1442182abc1e7397c8c0c862829bd00e9b670a96
 - path: golang.org/x/net
-  rev: feeb485667d1fdabe727840fe00adc22431bc86e
+  rev: 054b33e6527139ad5b1ec2f6232c3b175bd9a30c
 - path: golang.org/x/sys
-  rev: 9ccfe848b9db8435a24c424abbc07a921adf1df5
+  rev: 739734461d1c916b6c72a63d7efda2b27edb369f
 - path: gopkg.in/go-playground/validator.v8
   rev: 5f57d2222ad794d0dffb07e664ea05e2ee07d60c
 - path: gopkg.in/urfave/cli.v2

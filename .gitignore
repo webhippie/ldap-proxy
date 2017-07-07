@@ -24,9 +24,8 @@ _testmain.go
 *.prof
 
 coverage.out
-
 .env
+
 /dist
 /ldap-proxy
-
 /node_modules

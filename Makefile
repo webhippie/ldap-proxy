@@ -9,11 +9,12 @@ endif
 
 SHA := $(shell git rev-parse --short HEAD)
 DATE := $(shell date -u '+%Y%m%d')
-LDFLAGS += -s -w -extldflags "-static" -X "$(IMPORT)/config.VersionDev=$(SHA)" -X "$(IMPORT)/config.VersionDate=$(DATE)"
+LDFLAGS += -s -w -extldflags "-static" -X "$(IMPORT)/pkg/config.VersionDev=$(SHA)" -X "$(IMPORT)/pkg/config.VersionDate=$(DATE)"
 
 TARGETS ?= linux/*,darwin/*,windows/*
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 SOURCES ?= $(shell find . -name "*.go" -type f -not -path "./vendor/*")
+GENERATE ?= $(IMPORT)/pkg/assets $(IMPORT)/pkg/templates
 
 TAGS ?=
 
@@ -62,7 +63,7 @@ generate:
 	@which fileb0x > /dev/null; if [ $$? -ne 0 ]; then \
 		go get -u github.com/UnnoTed/fileb0x; \
 	fi
-	go generate $(PACKAGES)
+	go generate $(GENERATE)
 
 .PHONY: staticcheck
 staticcheck:

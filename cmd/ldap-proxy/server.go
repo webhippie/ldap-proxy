@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/webhippie/ldap-proxy/config"
-	"github.com/webhippie/ldap-proxy/router"
+	"github.com/webhippie/ldap-proxy/pkg/config"
+	"github.com/webhippie/ldap-proxy/pkg/router"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -27,9 +27,17 @@ func Server() *cli.Command {
 			},
 			&cli.BoolFlag{
 				Name:        "pprof",
+				Value:       false,
 				Usage:       "Enable pprof debugging server",
 				EnvVars:     []string{"LDAP_PROXY_PPROF"},
 				Destination: &config.Server.Pprof,
+			},
+			&cli.BoolFlag{
+				Name:        "prometheus",
+				Value:       false,
+				Usage:       "Enable prometheus exporter",
+				EnvVars:     []string{"LDAP_PROXY_PROMETHEUS"},
+				Destination: &config.Server.Prometheus,
 			},
 			&cli.StringFlag{
 				Name:        "cert",
@@ -58,6 +66,13 @@ func Server() *cli.Command {
 				Usage:       "Path to custom assets",
 				EnvVars:     []string{"LDAP_PROXY_ASSETS"},
 				Destination: &config.Server.Assets,
+			},
+			&cli.StringFlag{
+				Name:        "title",
+				Value:       "LDAP Proxy",
+				Usage:       "Title displayed on the login",
+				EnvVars:     []string{"LDAP_PROXY_TITLE"},
+				Destination: &config.Server.Title,
 			},
 			&cli.StringFlag{
 				Name:        "endpoint",
