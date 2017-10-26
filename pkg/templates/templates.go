@@ -12,7 +12,7 @@ import (
 	"github.com/webhippie/ldap-proxy/pkg/config"
 )
 
-//go:generate fileb0x ab0x.yaml
+//go:generate retool -tool-dir ../../_tools do fileb0x ab0x.yaml
 
 // File returns the content of a specifc template.
 func File(name string) ([]byte, error) {
