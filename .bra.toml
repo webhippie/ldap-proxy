@@ -2,7 +2,7 @@
 watch_all = true
 watch_dirs = ["cmd", "pkg"]
 watch_exts = [".go"]
-ignore = [".git", "node_modules", "assets", "templates"]
+ignore = [".git", "docs", "assets", "templates", "node_modules"]
 ignore_files = []
 build_delay = 1500
 interrupt_timout = 15
@@ -10,10 +10,28 @@ graceful_kill = false
 
 init_cmds = [
   ["make", "build"],
-  ["./ldap-proxy", "--debug", "server", "--templates", "templates/"]
+  [
+    "./ldap-proxy",
+    "--debug",
+    "server",
+    "--assets",
+    "assets/",
+    "--templates",
+    "templates/"
+  ]
 ]
 
 cmds = [
   ["make", "build"],
-  ["./ldap-proxy", "--debug", "server", "--templates", "templates/"]
+  [
+    "./ldap-proxy",
+    "--debug",
+    "server",
+    "--addr",
+    ":9000",
+    "--assets",
+    "assets/",
+    "--templates",
+    "templates/"
+  ]
 ]
