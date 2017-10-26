@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/webhippie/ldap-proxy/pkg/config"
+	"github.com/webhippie/ldap-proxy/pkg/version"
 )
 
 // Cache writes required cache headers to all requests.
@@ -53,7 +53,7 @@ func Secure(next http.Handler) http.Handler {
 // Version writes the current API version to the headers.
 func Version(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-LDAP-PROXY-VERSION", config.Version)
+		w.Header().Set("X-LDAP-PROXY-VERSION", version.Version.String())
 
 		next.ServeHTTP(w, r)
 	})
