@@ -10,7 +10,7 @@ import (
 	"github.com/webhippie/ldap-proxy/pkg/config"
 )
 
-//go:generate fileb0x ab0x.yaml
+//go:generate retool -tool-dir ../../_tools do fileb0x ab0x.yaml
 
 // Load initializes the static files.
 func Load() http.FileSystem {

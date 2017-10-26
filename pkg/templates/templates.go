@@ -12,7 +12,7 @@ import (
 	"github.com/webhippie/ldap-proxy/pkg/config"
 )
 
-//go:generate fileb0x ab0x.yaml
+//go:generate retool -tool-dir ../../_tools do fileb0x ab0x.yaml
 
 // File returns the content of a specifc template.
 func File(name string) ([]byte, error) {
@@ -68,14 +68,20 @@ func Names() []string {
 		}
 	}
 
-	for _, file := range FileNames {
-		result = append(
-			result,
-			fmt.Sprintf(
-				"templates/%s",
-				strings.TrimPrefix(file, "./"),
-			),
-		)
+	files, err := WalkDirs("", false)
+
+	if err != nil {
+		logrus.Warnf("Failed to read integrated templates. %s", err)
+	} else {
+		for _, file := range files {
+			result = append(
+				result,
+				fmt.Sprintf(
+					"templates/%s",
+					strings.TrimPrefix(file, "./"),
+				),
+			)
+		}
 	}
 
 	return result
