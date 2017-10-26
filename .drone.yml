@@ -3,6 +3,14 @@ workspace:
   path: src/github.com/webhippie/ldap-proxy
 
 pipeline:
+  cache-restore:
+    image: plugins/s3-cache:1
+    pull: true
+    secrets: [ cache_s3_endpoint, cache_s3_access_key, cache_s3_secret_key ]
+    restore: true
+    when:
+      local: false
+
   backend-prepare:
     image: webhippie/golang:edge
     pull: true
@@ -157,6 +165,30 @@ pipeline:
         target: plugin_urls
     when:
       event: [ push, tag ]
+      branch: [ master, release/* ]
+
+  cache-rebuild:
+    image: plugins/s3-cache:1
+    pull: true
+    secrets: [ cache_s3_endpoint, cache_s3_access_key, cache_s3_secret_key ]
+    rebuild: true
+    mount:
+      - _tools/bin
+      - _tools/pkg
+    when:
+      local: false
+      event: [ push ]
+      branch: [ master, release/* ]
+
+  cache-flush:
+    image: plugins/s3-cache:1
+    pull: true
+    secrets: [ cache_s3_endpoint, cache_s3_access_key, cache_s3_secret_key ]
+    flush: true
+    flush_age: 14
+    when:
+      local: false
+      event: [ push ]
       branch: [ master, release/* ]
 
   archive-release:
