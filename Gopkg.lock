@@ -20,30 +20,6 @@
   revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/facebookgo/clock"
-  packages = ["."]
-  revision = "600d898af40aa09a7a93ecb9265d87b0504b6f03"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/facebookgo/grace"
-  packages = ["gracehttp","gracenet"]
-  revision = "4afe952a37a495ae4ac0c1d4ce5f66e91058d149"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/facebookgo/httpdown"
-  packages = ["."]
-  revision = "a3b1354551a26449fbe05f5d855937f6e7acbd71"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/facebookgo/stats"
-  packages = ["."]
-  revision = "1b76add642e42c6ffba7211ad7b3939ce654526e"
-
-[[projects]]
   name = "github.com/go-chi/chi"
   packages = [".","middleware"]
   revision = "f7c66f685bcab06bcce78ac212c5f3553c063d19"
@@ -116,18 +92,6 @@
   revision = "3e3646d2c706c21b222a5dbcaa6db12b3e0cc765"
 
 [[projects]]
-  name = "gopkg.in/asn1-ber.v1"
-  packages = ["."]
-  revision = "379148ca0225df7a432012b8df0355c2a2063ac0"
-  version = "v1.2"
-
-[[projects]]
-  name = "gopkg.in/ldap.v2"
-  packages = ["."]
-  revision = "8168ee085ee43257585e50c6441aadf54ecb2c9f"
-  version = "v2.5.0"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/urfave/cli.v2"
   packages = ["."]
@@ -136,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0dba3007d16e157d690fe9fbbc1b527ff8f4ce66046fa9dcf5d36c5c8c49bfec"
+  inputs-digest = "a9cd956c865fd041e2d48767ac09c71dd10c01e8083e2180459494863b94a330"
   solver-name = "gps-cdcl"
   solver-version = 1
