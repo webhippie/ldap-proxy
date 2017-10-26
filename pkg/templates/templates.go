@@ -68,14 +68,20 @@ func Names() []string {
 		}
 	}
 
-	for _, file := range FileNames {
-		result = append(
-			result,
-			fmt.Sprintf(
-				"templates/%s",
-				strings.TrimPrefix(file, "./"),
-			),
-		)
+	files, err := WalkDirs("", false)
+
+	if err != nil {
+		logrus.Warnf("Failed to read integrated templates. %s", err)
+	} else {
+		for _, file := range files {
+			result = append(
+				result,
+				fmt.Sprintf(
+					"templates/%s",
+					strings.TrimPrefix(file, "./"),
+				),
+			)
+		}
 	}
 
 	return result
