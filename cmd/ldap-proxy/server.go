@@ -151,8 +151,14 @@ func Server() *cli.Command {
 				TLSConfig:    cfg,
 			}
 
-			if err := startServer(server); err != nil {
-				logrus.Fatal(err)
+			if server.TLSConfig == nil {
+				if err := server.ListenAndServe(); err != nil {
+					logrus.Fatal(err)
+				}
+			} else {
+				if err := server.ListenAndServeTLS("", ""); err != nil {
+					logrus.Fatal(err)
+				}
 			}
 
 			return nil
