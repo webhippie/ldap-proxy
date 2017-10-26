@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/oklog/oklog/pkg/group"
 	"github.com/webhippie/ldap-proxy/pkg/config"
 	"github.com/webhippie/ldap-proxy/pkg/router"
 	"gopkg.in/urfave/cli.v2"
@@ -135,33 +137,68 @@ func Server() *cli.Command {
 			return nil
 		},
 		Action: func(c *cli.Context) error {
-			logrus.Infof("Starting on %s", config.Server.Addr)
+			var (
+				gr group.Group
+			)
 
-			cfg, err := ssl()
+			if config.Server.Cert != "" && config.Server.Key != "" {
+				cfg, err := ssl()
 
-			if err != nil {
-				return err
-			}
+				if err != nil {
+					return err
+				}
 
-			server := &http.Server{
-				Addr:         config.Server.Addr,
-				Handler:      router.Load(),
-				ReadTimeout:  5 * time.Second,
-				WriteTimeout: 10 * time.Second,
-				TLSConfig:    cfg,
-			}
+				{
+					server := &http.Server{
+						Addr:         config.Server.Addr,
+						Handler:      router.Load(),
+						ReadTimeout:  5 * time.Second,
+						WriteTimeout: 10 * time.Second,
+						TLSConfig:    cfg,
+					}
 
-			if server.TLSConfig == nil {
-				if err := server.ListenAndServe(); err != nil {
-					logrus.Fatal(err)
+					gr.Add(func() error {
+						logrus.Infof("Starting on %s", config.Server.Addr)
+						return server.ListenAndServeTLS("", "")
+					}, func(reason error) {
+						ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+						defer cancel()
+
+						if err := server.Shutdown(ctx); err != nil {
+							logrus.Infof("Failed to shutdown server: %s", err)
+							return
+						}
+
+						logrus.Infof("Server shutdown gracefully")
+					})
 				}
 			} else {
-				if err := server.ListenAndServeTLS("", ""); err != nil {
-					logrus.Fatal(err)
+				{
+					server := &http.Server{
+						Addr:         config.Server.Addr,
+						Handler:      router.Load(),
+						ReadTimeout:  5 * time.Second,
+						WriteTimeout: 10 * time.Second,
+					}
+
+					gr.Add(func() error {
+						logrus.Infof("Starting on %s", config.Server.Addr)
+						return server.ListenAndServe()
+					}, func(reason error) {
+						ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+						defer cancel()
+
+						if err := server.Shutdown(ctx); err != nil {
+							logrus.Infof("Failed to shutdown server: %s", err)
+							return
+						}
+
+						logrus.Infof("Server shutdown gracefully")
+					})
 				}
 			}
 
-			return nil
+			return gr.Run()
 		},
 	}
 }

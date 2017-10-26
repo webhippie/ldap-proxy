@@ -44,6 +44,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/oklog/oklog"
+  packages = ["pkg/group"]
+  revision = "fca58330910eb7fe6267788eddf879b1d6811176"
+  version = "v0.2.2"
+
+[[projects]]
   name = "github.com/prometheus/client_golang"
   packages = ["prometheus","prometheus/promhttp"]
   revision = "c5b7fccd204277076155f10851dad72b76a49317"
@@ -100,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a9cd956c865fd041e2d48767ac09c71dd10c01e8083e2180459494863b94a330"
+  inputs-digest = "dded700b26bb0b76093e056af7aa96faca800c2497c69dc7854653f41d26134c"
   solver-name = "gps-cdcl"
   solver-version = 1
