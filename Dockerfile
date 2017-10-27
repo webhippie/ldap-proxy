@@ -1,8 +1,13 @@
 FROM webhippie/alpine:latest
 MAINTAINER Thomas Boerger <thomas@webhippie.de>
 
-EXPOSE 8080
+EXPOSE 8080 80 443
 VOLUME ["/var/lib/ldap-proxy"]
+
+LABEL org.label-schema.version=latest
+LABEL org.label-schema.name="LDAP Proxy"
+LABEL org.label-schema.vendor="Thomas Boerger"
+LABEL org.label-schema.schema-version="1.0"
 
 RUN apk update && \
   apk add \
@@ -18,22 +23,18 @@ RUN apk update && \
     -s /bin/bash \
     -G ldap-proxy \
     -u 1000 \
-    ldap-proxy
+    ldap-proxy && \
+  mkdir -p \
+    /usr/share/ldap-proxy
 
+ENV LDAP_PROXY_SERVER_STORAGE /var/lib/ldap-proxy
+ENV LDAP_PROXY_SERVER_TEMPLATES /usr/share/ldap-proxy/templates
+ENV LDAP_PROXY_SERVER_ASSETS /usr/share/ldap-proxy/assets
+
+COPY assets /usr/share/ldap-proxy/
+COPY templates /usr/share/ldap-proxy/
 COPY ldap-proxy /usr/bin/
 
 USER ldap-proxy
 ENTRYPOINT ["/usr/bin/ldap-proxy"]
 CMD ["server"]
-
-# ARG VERSION
-# ARG BUILD_DATE
-# ARG VCS_REF
-
-# LABEL org.label-schema.version=$VERSION
-# LABEL org.label-schema.build-date=$BUILD_DATE
-# LABEL org.label-schema.vcs-ref=$VCS_REF
-LABEL org.label-schema.vcs-url="https://github.com/webhippie/ldap-proxy.git"
-LABEL org.label-schema.name="LDAP Proxy"
-LABEL org.label-schema.vendor="Thomas Boerger"
-LABEL org.label-schema.schema-version="1.0"
