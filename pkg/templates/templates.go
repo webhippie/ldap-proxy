@@ -1,102 +1,131 @@
 package templates
 
 import (
-	"fmt"
 	"html/template"
 	"io/ioutil"
-	"path"
+	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/Unknwon/com"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/webhippie/ldap-proxy/pkg/config"
 )
 
 //go:generate retool -tool-dir ../../_tools do fileb0x ab0x.yaml
 
-// File returns the content of a specifc template.
-func File(name string) ([]byte, error) {
-	name = strings.TrimPrefix(
-		name,
-		"templates/",
+// Load initializes the template files.
+func Load(logger log.Logger) *template.Template {
+	tpls := template.New(
+		"",
+	).Funcs(
+		Funcs(),
 	)
 
-	if config.Server.Templates != "" {
-		if com.IsDir(config.Server.Templates) {
-			pathName := path.Join(
-				config.Server.Templates,
+	files, err := WalkDirs(
+		"",
+		false,
+	)
+
+	if err != nil {
+		level.Warn(logger).Log(
+			"msg", "failed to get builtin template list",
+			"err", err,
+		)
+	} else {
+		for _, name := range files {
+			file, readErr := ReadFile(name)
+
+			if readErr != nil {
+				level.Warn(logger).Log(
+					"msg", "failed to read builtin template",
+					"err", readErr,
+					"file", name,
+				)
+			}
+
+			_, parseErr := tpls.New(
 				name,
+			).Parse(
+				string(file),
 			)
 
-			if com.IsFile(pathName) {
-				return ioutil.ReadFile(pathName)
+			if parseErr != nil {
+				level.Warn(logger).Log(
+					"msg", "failed to parse builtin template",
+					"err", parseErr,
+					"file", name,
+				)
 			}
-		} else {
-			logrus.Warnf("Custom templates directory doesn't exist")
 		}
 	}
 
-	return ReadFile(name)
-}
-
-// Names returns a list of all available templates.
-func Names() []string {
-	result := []string{}
-
 	if config.Server.Templates != "" {
-		if com.IsDir(config.Server.Templates) {
-			files, err := com.GetFileListBySuffix(config.Server.Templates, ".tmpl")
+		if stat, err := os.Stat(config.Server.Templates); err == nil && stat.IsDir() {
+			files := []string{}
 
-			if err != nil {
-				logrus.Warnf("Failed to read custom templates. %s", err)
-			} else {
-				for _, file := range files {
-					result = append(
-						result,
-						fmt.Sprintf(
-							"templates/%s",
-							strings.TrimPrefix(
-								file,
-								config.Server.Templates,
-							),
+			filepath.Walk(config.Server.Templates, func(path string, f os.FileInfo, err error) error {
+				if f.IsDir() {
+					return nil
+				}
+
+				files = append(
+					files,
+					path,
+				)
+
+				return nil
+			})
+
+			for _, name := range files {
+				file, readErr := ioutil.ReadFile(name)
+
+				if readErr != nil {
+					level.Warn(logger).Log(
+						"msg", "failed to read custom template",
+						"err", readErr,
+						"file", name,
+					)
+				}
+
+				_, parseErr := tpls.New(
+					strings.TrimPrefix(
+						strings.TrimPrefix(
+							name,
+							config.Server.Templates,
 						),
+						"/",
+					),
+				).Parse(
+					string(file),
+				)
+
+				if parseErr != nil {
+					level.Warn(logger).Log(
+						"msg", "failed to parse custom template",
+						"err", parseErr,
+						"file", name,
 					)
 				}
 			}
 		} else {
-			logrus.Warnf("Custom templates directory doesn't exist")
-		}
-	}
-
-	files, err := WalkDirs("", false)
-
-	if err != nil {
-		logrus.Warnf("Failed to read integrated templates. %s", err)
-	} else {
-		for _, file := range files {
-			result = append(
-				result,
-				fmt.Sprintf(
-					"templates/%s",
-					strings.TrimPrefix(file, "./"),
-				),
+			level.Warn(logger).Log(
+				"msg", "custom templates directory doesn't exist",
 			)
 		}
 	}
 
-	return result
+	return tpls
 }
 
 // Funcs provides some general usefule template helpers.
-func Funcs() []template.FuncMap {
-	return []template.FuncMap{
-		{
-			"split":    strings.Split,
-			"join":     strings.Join,
-			"toUpper":  strings.ToUpper,
-			"toLower":  strings.ToLower,
-			"contains": strings.Contains,
-			"replace":  strings.Replace,
-		},
+func Funcs() template.FuncMap {
+	return template.FuncMap{
+		"split":    strings.Split,
+		"join":     strings.Join,
+		"toUpper":  strings.ToUpper,
+		"toLower":  strings.ToLower,
+		"contains": strings.Contains,
+		"replace":  strings.Replace,
 	}
 }

@@ -22,24 +22,28 @@
 
 
 [[constraint]]
-  name = "github.com/Sirupsen/logrus"
-  version = "1.0.3"
+  branch = "develop"
+  name = "github.com/codehack/fail"
 
 [[constraint]]
-  name = "github.com/Unknwon/com"
-  version = "1.0.0"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/facebookgo/grace"
+  name = "github.com/coreos/go-semver"
+  version = "0.2.0"
 
 [[constraint]]
   name = "github.com/go-chi/chi"
   version = "3.3.0"
 
 [[constraint]]
+  name = "github.com/go-kit/kit"
+  version = "0.6.0"
+
+[[constraint]]
   name = "github.com/joho/godotenv"
   version = "1.2.0"
+
+[[constraint]]
+  name = "github.com/oklog/oklog"
+  version = "0.2.2"
 
 [[constraint]]
   name = "github.com/prometheus/client_golang"
@@ -47,15 +51,11 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/unrolled/render"
+  name = "golang.org/x/crypto"
 
 [[constraint]]
   branch = "master"
   name = "golang.org/x/net"
-
-[[constraint]]
-  name = "gopkg.in/ldap.v2"
-  version = "2.5.0"
 
 [[constraint]]
   branch = "v2"

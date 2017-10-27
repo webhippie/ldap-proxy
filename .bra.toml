@@ -12,11 +12,12 @@ init_cmds = [
   ["make", "build"],
   [
     "./ldap-proxy",
-    "--debug",
+    "--log-level",
+    "debug",
     "server",
-    "--assets",
+    "--assets-path",
     "assets/",
-    "--templates",
+    "--templates-path",
     "templates/"
   ]
 ]
@@ -25,13 +26,12 @@ cmds = [
   ["make", "build"],
   [
     "./ldap-proxy",
-    "--debug",
+    "--log-level",
+    "debug",
     "server",
-    "--addr",
-    ":9000",
-    "--assets",
+    "--assets-path",
     "assets/",
-    "--templates",
+    "--templates-path",
     "templates/"
   ]
 ]

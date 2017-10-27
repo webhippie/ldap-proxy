@@ -21,7 +21,7 @@ func main() {
 	app := &cli.App{
 		Name:     "ldap-proxy",
 		Version:  version.Version.String(),
-		Usage:    "Proxy for authentication via LDAP",
+		Usage:    "proxy for authentication via LDAP",
 		Compiled: time.Now(),
 
 		Authors: []*cli.Author{
@@ -32,12 +32,12 @@ func main() {
 		},
 
 		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Name:        "debug",
-				Usage:       "Activate debug information",
-				EnvVars:     []string{"LDAP_PROXY_DEBUG"},
-				Destination: &config.Debug,
-				Hidden:      true,
+			&cli.StringFlag{
+				Name:        "log-level",
+				Value:       "info",
+				Usage:       "set logging level",
+				EnvVars:     []string{"LDAP_PROXY_LOG_LEVEL"},
+				Destination: &config.LogLevel,
 			},
 		},
 
@@ -47,19 +47,20 @@ func main() {
 
 		Commands: []*cli.Command{
 			Server(),
+			Health(),
 		},
 	}
 
 	cli.HelpFlag = &cli.BoolFlag{
 		Name:    "help",
 		Aliases: []string{"h"},
-		Usage:   "Show the help, so what you see now",
+		Usage:   "show the help, so what you see now",
 	}
 
 	cli.VersionFlag = &cli.BoolFlag{
 		Name:    "version",
 		Aliases: []string{"v"},
-		Usage:   "Print the current version of that tool",
+		Usage:   "print the current version of that tool",
 	}
 
 	if err := app.Run(os.Args); err != nil {

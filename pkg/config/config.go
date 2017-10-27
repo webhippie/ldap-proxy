@@ -1,15 +1,21 @@
 package config
 
 type server struct {
-	Addr       string
-	Cert       string
-	Key        string
-	Templates  string
-	Assets     string
-	Endpoint   string
-	Title      string
-	Pprof      bool
-	Prometheus bool
+	Host          string
+	Addr          string
+	Cert          string
+	Key           string
+	Root          string
+	Storage       string
+	Templates     string
+	Assets        string
+	Endpoint      string
+	Title         string
+	LetsEncrypt   bool
+	StrictCurves  bool
+	StrictCiphers bool
+	Prometheus    bool
+	Pprof         bool
 }
 
 type ldap struct {
@@ -25,8 +31,8 @@ type ldap struct {
 }
 
 var (
-	// Debug represents the flag to enable or disable debug logging.
-	Debug bool
+	// LogLevel defines the log level used by our logging package.
+	LogLevel string
 
 	// Server represents the information about the server bindings.
 	Server = &server{}
