@@ -2,6 +2,9 @@ workspace:
   base: /srv/app
   path: src/github.com/webhippie/ldap-proxy
 
+branches:
+  - master
+
 pipeline:
   cache-restore:
     image: plugins/s3-cache:1
@@ -11,15 +14,44 @@ pipeline:
     when:
       local: false
 
+  frontend-prepare:
+    image: webhippie/nodejs:latest
+    pull: true
+    commands:
+      - yarn install --frozen-lockfile
+
+  frontend-lint:
+    image: webhippie/nodejs:latest
+    pull: true
+    group: frontend
+    commands:
+      - yarn lint
+
+  frontend-test:
+    image: webhippie/nodejs:latest
+    pull: true
+    group: frontend
+    commands:
+      - yarn test
+
+  frontend-build:
+    image: webhippie/nodejs:latest
+    pull: true
+    group: frontend
+    commands:
+      - yarn build
+
   backend-prepare:
     image: webhippie/golang:edge
     pull: true
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
+      - TAGS=
     commands:
       - make clean
       - make retool
+      - make sync
       - make generate
 
   backend-vet:
@@ -27,8 +59,9 @@ pipeline:
     pull: true
     group: backend
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
+      - TAGS=
     commands:
       - make vet
 
@@ -37,8 +70,9 @@ pipeline:
     pull: true
     group: backend
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
+      - TAGS=
     commands:
       - make megacheck
 
@@ -47,8 +81,9 @@ pipeline:
     pull: true
     group: backend
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
+      - TAGS=
     commands:
       - make lint
 
@@ -57,8 +92,9 @@ pipeline:
     pull: true
     group: backend
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
+      - TAGS=
     commands:
       - make test
 
@@ -67,105 +103,140 @@ pipeline:
     pull: true
     group: backend
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
       - TAGS=
     commands:
       - make build
-
-  backend-windows:
-    image: karalabe/xgo-latest:latest
-    pull: true
-    group: release
-    environment:
-      - CGO_ENABLED=1
-      - GOPATH=/srv/app
-      - TAGS=
-    commands:
-      - make release-dirs release-windows
-    when:
-      event: [ push, tag ]
-      branch: [ master, release/* ]
 
   backend-linux:
     image: karalabe/xgo-latest:latest
     pull: true
     group: release
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
       - TAGS=
     commands:
       - make release-dirs release-linux
     when:
-      event: [ push, tag ]
-      branch: [ master, release/* ]
+      event: [ push, tag, pull_request ]
 
   backend-darwin:
     image: karalabe/xgo-latest:latest
     pull: true
     group: release
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
       - TAGS=
     commands:
       - make release-dirs release-darwin
     when:
       event: [ push, tag ]
-      branch: [ master, release/* ]
+
+  backend-windows:
+    image: karalabe/xgo-latest:latest
+    pull: true
+    group: release
+    environment:
+      - CGO_ENABLED=0
+      - GOPATH=/srv/app
+      - TAGS=
+    commands:
+      - make release-dirs release-windows
+    when:
+      event: [ push, tag ]
 
   backend-finish:
     image: webhippie/golang:edge
     pull: true
     environment:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - GOPATH=/srv/app
       - TAGS=
     commands:
       - make release-copy release-check
     when:
       event: [ push, tag ]
-      branch: [ master, release/* ]
 
-  docker-publish:
+  docker-amd64:
     image: plugins/docker:17.05
     pull: true
+    group: docker
     secrets: [ docker_username, docker_password ]
     repo: tboerger/ldap-proxy
-    tags: [ '${DRONE_TAG##v}' ]
+    auto_tag: true
+    auto_tag_suffix: amd64
+    dry_run: true
     when:
-      event: [ tag ]
+      event: [ pull_request ]
 
-  docker-publish:
+  docker-amd64:
     image: plugins/docker:17.05
     pull: true
+    group: docker
     secrets: [ docker_username, docker_password ]
     repo: tboerger/ldap-proxy
-    tags: [ '${DRONE_BRANCH##release/v}' ]
+    auto_tag: true
+    auto_tag_suffix: amd64
     when:
-      event: [ push ]
-      branch: [ release/* ]
+      event: [ push, tag ]
 
-  docker-publish:
+  docker-i386:
     image: plugins/docker:17.05
     pull: true
+    group: docker
     secrets: [ docker_username, docker_password ]
     repo: tboerger/ldap-proxy
-    tags: [ 'latest' ]
+    dockerfile: Dockerfile.i386
+    auto_tag: true
+    auto_tag_suffix: i386
     when:
-      event: [ push ]
-      branch: [ master ]
+      event: [ push, tag ]
+
+  docker-arm64:
+    image: plugins/docker:17.05
+    pull: true
+    group: docker
+    secrets: [ docker_username, docker_password ]
+    repo: tboerger/ldap-proxy
+    dockerfile: Dockerfile.arm64
+    auto_tag: true
+    auto_tag_suffix: arm64
+    when:
+      event: [ push, tag ]
+
+  docker-arm:
+    image: plugins/docker:17.05
+    pull: true
+    group: docker
+    secrets: [ docker_username, docker_password ]
+    repo: tboerger/ldap-proxy
+    dockerfile: Dockerfile.arm
+    auto_tag: true
+    auto_tag_suffix: arm
+    when:
+      event: [ push, tag ]
+
+  docker-manifests:
+    image: plugins/manifest:1
+    pull: true
+    secrets: [ docker_username, docker_password ]
+    spec: manifest.yml
+    auto_tag: true
+    ignore_missing: true
+    when:
+      event: [ push, tag ]
 
   docker-microbadger:
     image: plugins/webhook:1
     pull: true
     secrets:
       - source: microbadger_token
-        target: plugin_urls
+        target: webhook_urls
     when:
       event: [ push, tag ]
-      branch: [ master, release/* ]
 
   cache-rebuild:
     image: plugins/s3-cache:1
@@ -173,12 +244,12 @@ pipeline:
     secrets: [ cache_s3_endpoint, cache_s3_access_key, cache_s3_secret_key ]
     rebuild: true
     mount:
-      - _tools/bin
-      - _tools/pkg
+      - _tools
+      - vendor
+      - node_modules
     when:
       local: false
       event: [ push ]
-      branch: [ master, release/* ]
 
   cache-flush:
     image: plugins/s3-cache:1
@@ -189,7 +260,36 @@ pipeline:
     when:
       local: false
       event: [ push ]
-      branch: [ master, release/* ]
+
+  docs-build:
+    image: webhippie/hugo:latest
+    pull: true
+    commands:
+      - make docs
+    when:
+      local: false
+      event: [ push ]
+
+  docs-publish:
+    image: plugins/gh-pages:1
+    pull: true
+    secrets: [ github_username, github_password ]
+    pages_directory: docs/public/
+    temporary_base: tmp/
+    when:
+      local: false
+      event: [ push ]
+
+  archive-release:
+    image: plugins/s3:1
+    pull: true
+    secrets: [ s3_endpoint, aws_access_key_id, aws_secret_access_key, s3_bucket ]
+    source: dist/release/*
+    target: /misc/ldap-proxy/master
+    strip_prefix: dist/release/
+    path_style: true
+    when:
+      event: [ push ]
 
   archive-release:
     image: plugins/s3:1
@@ -202,30 +302,6 @@ pipeline:
     when:
       event: [ tag ]
 
-  archive-release:
-    image: plugins/s3:1
-    pull: true
-    secrets: [ s3_endpoint, aws_access_key_id, aws_secret_access_key, s3_bucket ]
-    source: dist/release/*
-    target: /misc/ldap-proxy/${DRONE_TAG##release/v}
-    strip_prefix: dist/release/
-    path_style: true
-    when:
-      event: [ push ]
-      branch: [ release/* ]
-
-  archive-release:
-    image: plugins/s3:1
-    pull: true
-    secrets: [ s3_endpoint, aws_access_key_id, aws_secret_access_key, s3_bucket ]
-    source: dist/release/*
-    target: /misc/ldap-proxy/master
-    strip_prefix: dist/release/
-    path_style: true
-    when:
-      event: [ push ]
-      branch: [ master ]
-
   github-release:
     image: plugins/github-release:1
     pull: true
@@ -234,11 +310,13 @@ pipeline:
       - dist/release/*
     when:
       event: [ tag ]
+      branch: master
 
-  notify-gitter:
-    image: plugins/gitter:1
+  notify-matrix:
+    image: plugins/matrix:1
     pull: true
-    secrets: [ gitter_webhook ]
+    secrets: [ matrix_roomid, matrix_username, matrix_password ]
     when:
       local: false
-      status: [ success, failure ]
+      event: [ push, tag ]
+      status: [ changed, failure ]

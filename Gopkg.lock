@@ -2,16 +2,33 @@
 
 
 [[projects]]
+  name = "github.com/Masterminds/semver"
+  packages = ["."]
+  revision = "59c29afe1a994eacb71c833025ca7acf874bb1da"
+  version = "v1.2.2"
+
+[[projects]]
+  name = "github.com/Masterminds/sprig"
+  packages = ["."]
+  revision = "6b2a58267f6a8b1dc8e2eb5519b984008fa85e8c"
+  version = "v2.15.0"
+
+[[projects]]
+  name = "github.com/aokoli/goutils"
+  packages = ["."]
+  revision = "9c37978a95bd5c709a15883b6242714ea6709e64"
+
+[[projects]]
   branch = "master"
   name = "github.com/beorn7/perks"
   packages = ["quantile"]
-  revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
+  revision = "3a771d992973f24aa725d07868b467d1ddfceafb"
 
 [[projects]]
-  branch = "develop"
-  name = "github.com/codehack/fail"
+  branch = "master"
+  name = "github.com/codahale/hdrhistogram"
   packages = ["."]
-  revision = "bdeb8b2dea4488451d62b997d805085443c594e7"
+  revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
 
 [[projects]]
   name = "github.com/coreos/go-semver"
@@ -21,33 +38,47 @@
 
 [[projects]]
   name = "github.com/go-chi/chi"
-  packages = [".","middleware"]
-  revision = "f7c66f685bcab06bcce78ac212c5f3553c063d19"
-  version = "v3.3.0"
+  packages = [
+    ".",
+    "middleware"
+  ]
+  revision = "e83ac2304db3c50cf03d96a2fcd39009d458bc35"
+  version = "v3.3.2"
 
 [[projects]]
-  name = "github.com/go-kit/kit"
-  packages = ["log","log/level"]
-  revision = "4dc7be5d2d12881735283bcab7352178e190fc71"
-  version = "v0.6.0"
-
-[[projects]]
-  name = "github.com/go-logfmt/logfmt"
-  packages = ["."]
-  revision = "390ab7935ee28ec6b286364bba9b4dd6410cb3d5"
-  version = "v0.3.0"
-
-[[projects]]
-  name = "github.com/go-stack/stack"
-  packages = ["."]
-  revision = "817915b46b97fd7bb80e8ab6b69f01a53ac3eebf"
-  version = "v1.6.0"
-
-[[projects]]
-  branch = "master"
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "1643683e1b54a9e88ad26d98f81400c8c9d9f4f9"
+  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/google/uuid"
+  packages = ["."]
+  revision = "064e2069ce9c359c118179501254f67d7d37ba24"
+  version = "0.2"
+
+[[projects]]
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
+  version = "v1.2.0"
+
+[[projects]]
+  name = "github.com/gravitational/trace"
+  packages = ["."]
+  revision = "792b9868cdf9d499e09b47f167c553e786a0e235"
+  version = "1.1.4"
+
+[[projects]]
+  name = "github.com/huandu/xstrings"
+  packages = ["."]
+  revision = "3959339b333561bf62a38b424fd41517c2c90f40"
+
+[[projects]]
+  name = "github.com/imdario/mergo"
+  packages = ["."]
+  revision = "7fe0c75c13abdee74b09fcacef5ea1c6bba6a874"
+  version = "0.2.4"
 
 [[projects]]
   name = "github.com/joho/godotenv"
@@ -56,10 +87,22 @@
   version = "v1.2.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/kr/logfmt"
+  name = "github.com/jonboulle/clockwork"
   packages = ["."]
-  revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"
+  revision = "2eee05ed794112d45db504eb05aa693efd2b8b09"
+  version = "v0.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mailgun/multibuf"
+  packages = ["."]
+  revision = "565402cd71fbd9c12aa7e295324ea357e970a61e"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mailgun/timetools"
+  packages = ["."]
+  revision = "f3a7b8ffff474320c4f5cc564c9abb2c52ded8bc"
 
 [[projects]]
   name = "github.com/matttproud/golang_protobuf_extensions"
@@ -68,14 +111,17 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/oklog/oklog"
-  packages = ["pkg/group"]
-  revision = "fca58330910eb7fe6267788eddf879b1d6811176"
-  version = "v0.2.2"
+  name = "github.com/oklog/run"
+  packages = ["."]
+  revision = "4dadeb3030eda0273a12382bb2348ffc7c9d1a39"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/prometheus/client_golang"
-  packages = ["prometheus","prometheus/promhttp"]
+  packages = [
+    "prometheus",
+    "prometheus/promhttp"
+  ]
   revision = "c5b7fccd204277076155f10851dad72b76a49317"
   version = "v0.8.0"
 
@@ -83,41 +129,132 @@
   branch = "master"
   name = "github.com/prometheus/client_model"
   packages = ["go"]
-  revision = "6f3806018612930941127f2a7c6c453ba2c527d2"
+  revision = "99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model"]
-  revision = "1bab55dd05dbff384524a6a1c99006d9eb5f139b"
+  packages = [
+    "expfmt",
+    "internal/bitbucket.org/ww/goautoneg",
+    "model"
+  ]
+  revision = "d811d2e9bf898806ecfb6ef6296774b13ffc314c"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [".","xfs"]
-  revision = "a6e9df898b1336106c743392c48ee0b71f5c4efa"
+  packages = [
+    ".",
+    "internal/util",
+    "nfs",
+    "xfs"
+  ]
+  revision = "8b1c2da0d56deffdbb9e48d4414b4e674bd8083e"
+
+[[projects]]
+  name = "github.com/rs/xid"
+  packages = ["."]
+  revision = "02dd45c33376f85d1064355dc790dcc4850596b1"
+  version = "v1.1"
+
+[[projects]]
+  name = "github.com/rs/zerolog"
+  packages = [
+    ".",
+    "hlog",
+    "internal/cbor",
+    "internal/json",
+    "log"
+  ]
+  revision = "05eafee0eb17d0150591a8f30f0fa592cc9b7471"
+  version = "v1.6.0"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/vulcand/oxy"
+  packages = [
+    "buffer",
+    "forward",
+    "memmetrics",
+    "roundrobin",
+    "utils"
+  ]
+  revision = "6956548a7fa4272adeadf828455109c53933ea86"
+
+[[projects]]
+  name = "github.com/vulcand/predicate"
+  packages = ["."]
+  revision = "8fbfb3ab0e94276b6b58bec378600829adc7a203"
+  version = "v1.1.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/webhippie/fail"
+  packages = ["."]
+  revision = "579e16d581f0b5a35a7639107c9fc3ebac2c5b52"
+
+[[projects]]
+  name = "github.com/zenazn/goji"
+  packages = ["web/mutil"]
+  revision = "64eb34159fe53473206c2b3e70fe396a639452f2"
+  version = "v1.0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert"]
-  revision = "2509b142fb2b797aa7587dad548f113b2c0f20ce"
+  packages = [
+    "acme",
+    "acme/autocert",
+    "pbkdf2",
+    "scrypt",
+    "ssh/terminal"
+  ]
+  revision = "2d027ae1dddd4694d54f7a8b6cbe78dca8720226"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","webdav","webdav/internal/xml"]
-  revision = "7b572d500b0702f1ea30a47083ce2e1e5c61edba"
+  packages = [
+    "context",
+    "webdav",
+    "webdav/internal/xml"
+  ]
+  revision = "f73e4c9ed3b7ebdd5f699a16a880c2b1994e50dd"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "7dfd1290c7917b7ba22824b9d24954ab3002fe24"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/mgo.v2"
+  packages = [
+    "bson",
+    "internal/json"
+  ]
+  revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
 
 [[projects]]
   branch = "v2"
   name = "gopkg.in/urfave/cli.v2"
   packages = ["."]
-  revision = "b2bf3c5abeb90da407891aecd1df2c5a1f6170c1"
+  revision = "d3ae77c26ac8db90639677e4831a728d33c36111"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9bf23d95b64ef8a9dc7c7108a8ce97e23afba10972719d9a02d8babf0b0540bc"
+  inputs-digest = "9f198013db49ed25bd6b273e18328f12da578d96f9de77b68e153d0858b4acc9"
   solver-name = "gps-cdcl"
   solver-version = 1

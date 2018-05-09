@@ -1,24 +1,38 @@
 package config
 
-type server struct {
+// Server defines the server configuration.
+type Server struct {
+	Health        string
+	Secure        string
+	Public        string
 	Host          string
-	Addr          string
+	Root          string
 	Cert          string
 	Key           string
-	Root          string
-	Storage       string
-	Templates     string
-	Assets        string
-	Endpoint      string
-	Title         string
-	LetsEncrypt   bool
+	AutoCert      bool
 	StrictCurves  bool
 	StrictCiphers bool
-	Prometheus    bool
-	Pprof         bool
+	Templates     string
+	Assets        string
+	Storage       string
 }
 
-type ldap struct {
+// Logs defines the logging configuration.
+type Logs struct {
+	Level   string
+	Colored bool
+	Pretty  bool
+}
+
+// Proxy defines the proxy configuration.
+type Proxy struct {
+	Title      string
+	Endpoints  []string
+	UserHeader string
+}
+
+// LDAP defines the ldap configuration.
+type LDAP struct {
 	Addr         string
 	BindUsername string
 	BindPassword string
@@ -30,13 +44,15 @@ type ldap struct {
 	MailHeader   string
 }
 
-var (
-	// LogLevel defines the log level used by our logging package.
-	LogLevel string
+// Config defines the general configuration.
+type Config struct {
+	Server Server
+	Logs   Logs
+	Proxy  Proxy
+	LDAP   LDAP
+}
 
-	// Server represents the information about the server bindings.
-	Server = &server{}
-
-	// LDAP represents the information about the ldap server bindings.
-	LDAP = &ldap{}
-)
+// New prepares a new default configuration.
+func New() *Config {
+	return &Config{}
+}

@@ -7,19 +7,22 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/Masterminds/sprig"
+	"github.com/rs/zerolog/log"
 	"github.com/webhippie/ldap-proxy/pkg/config"
+
+	// Dummy import to have the dep managed.
+	_ "golang.org/x/net/webdav"
 )
 
-//go:generate retool -tool-dir ../../_tools do fileb0x ab0x.yaml
+//go:generate fileb0x ab0x.yaml
 
 // Load initializes the template files.
-func Load(logger log.Logger) *template.Template {
+func Load(cfg *config.Config) *template.Template {
 	tpls := template.New(
 		"",
 	).Funcs(
-		Funcs(),
+		sprig.FuncMap(),
 	)
 
 	files, err := WalkDirs(
@@ -28,20 +31,18 @@ func Load(logger log.Logger) *template.Template {
 	)
 
 	if err != nil {
-		level.Warn(logger).Log(
-			"msg", "failed to get builtin template list",
-			"err", err,
-		)
+		log.Warn().
+			Err(err).
+			Msg("failed to get builtin template list")
 	} else {
 		for _, name := range files {
 			file, readErr := ReadFile(name)
 
 			if readErr != nil {
-				level.Warn(logger).Log(
-					"msg", "failed to read builtin template",
-					"err", readErr,
-					"file", name,
-				)
+				log.Warn().
+					Err(readErr).
+					Str("file", name).
+					Msg("failed to read builtin template")
 			}
 
 			_, parseErr := tpls.New(
@@ -51,20 +52,19 @@ func Load(logger log.Logger) *template.Template {
 			)
 
 			if parseErr != nil {
-				level.Warn(logger).Log(
-					"msg", "failed to parse builtin template",
-					"err", parseErr,
-					"file", name,
-				)
+				log.Warn().
+					Err(parseErr).
+					Str("file", name).
+					Msg("failed to parse builtin template")
 			}
 		}
 	}
 
-	if config.Server.Templates != "" {
-		if stat, err := os.Stat(config.Server.Templates); err == nil && stat.IsDir() {
+	if cfg.Server.Templates != "" {
+		if stat, err := os.Stat(cfg.Server.Templates); err == nil && stat.IsDir() {
 			files := []string{}
 
-			filepath.Walk(config.Server.Templates, func(path string, f os.FileInfo, err error) error {
+			filepath.Walk(cfg.Server.Templates, func(path string, f os.FileInfo, err error) error {
 				if f.IsDir() {
 					return nil
 				}
@@ -81,18 +81,17 @@ func Load(logger log.Logger) *template.Template {
 				file, readErr := ioutil.ReadFile(name)
 
 				if readErr != nil {
-					level.Warn(logger).Log(
-						"msg", "failed to read custom template",
-						"err", readErr,
-						"file", name,
-					)
+					log.Warn().
+						Err(readErr).
+						Str("file", name).
+						Msg("failed to read custom template")
 				}
 
 				_, parseErr := tpls.New(
 					strings.TrimPrefix(
 						strings.TrimPrefix(
 							name,
-							config.Server.Templates,
+							cfg.Server.Templates,
 						),
 						"/",
 					),
@@ -101,31 +100,18 @@ func Load(logger log.Logger) *template.Template {
 				)
 
 				if parseErr != nil {
-					level.Warn(logger).Log(
-						"msg", "failed to parse custom template",
-						"err", parseErr,
-						"file", name,
-					)
+					log.Warn().
+						Err(parseErr).
+						Str("file", name).
+						Msg("failed to parse custom template")
 				}
 			}
 		} else {
-			level.Warn(logger).Log(
-				"msg", "custom templates directory doesn't exist",
-			)
+			log.Warn().
+				Str("dir", cfg.Server.Templates).
+				Msg("custom templates directory doesn't exist")
 		}
 	}
 
 	return tpls
-}
-
-// Funcs provides some general usefule template helpers.
-func Funcs() template.FuncMap {
-	return template.FuncMap{
-		"split":    strings.Split,
-		"join":     strings.Join,
-		"toUpper":  strings.ToUpper,
-		"toLower":  strings.ToLower,
-		"contains": strings.Contains,
-		"replace":  strings.Replace,
-	}
 }

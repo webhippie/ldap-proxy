@@ -3,34 +3,27 @@ package handler
 import (
 	"net/http"
 
-	"github.com/codehack/fail"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/rs/zerolog/log"
+	"github.com/webhippie/fail"
 	"github.com/webhippie/ldap-proxy/pkg/config"
 	"github.com/webhippie/ldap-proxy/pkg/templates"
 )
 
 // Login displays the login form for authentication.
-func Login(logger log.Logger) http.HandlerFunc {
-	logger = log.WithPrefix(logger, "handler", "login")
+func Login(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := map[string]string{
+			"Title": cfg.Proxy.Title,
+			"Root":  cfg.Server.Root,
+			"Error": "",
+		}
 
-	return func(w http.ResponseWriter, req *http.Request) {
-		err := templates.Load(logger).ExecuteTemplate(
-			w,
-			"login.tmpl",
-			map[string]string{
-				"Title": config.Server.Title,
-				"Root":  config.Server.Root,
-			},
-		)
+		if err := templates.Load(cfg).ExecuteTemplate(w, "login.tmpl", vars); err != nil {
+			log.Warn().
+				Err(err).
+				Msg("failed to process login template")
 
-		if err != nil {
-			level.Warn(logger).Log(
-				"msg", "failed to process index template",
-				"err", err,
-			)
-
-			fail.Error(w, fail.Cause(err).Unexpected())
+			fail.ErrorPlain(w, fail.Cause(err).Unexpected())
 			return
 		}
 	}

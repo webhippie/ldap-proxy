@@ -1,4 +1,7 @@
-FROM webhippie/alpine:latest
+FROM webhippie/alpine:latest AS build
+RUN apk add --no-cache ca-certificates mailcap
+
+FROM scratch
 
 LABEL maintainer="Thomas Boerger <thomas@webhippie.de>" \
   org.label-schema.name="LDAP Proxy" \
@@ -16,8 +19,9 @@ ENV LDAP_PROXY_SERVER_ASSETS /usr/share/ldap-proxy/assets
 ENTRYPOINT ["/usr/bin/ldap-proxy"]
 CMD ["server"]
 
-RUN apk add --no-cache ca-certificates mailcap bash
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /etc/mime.types /etc/
 
 COPY assets /usr/share/ldap-proxy/
 COPY templates /usr/share/ldap-proxy/
-COPY dist/binaries/terrastate-*-linux-amd64 /usr/bin/terrastate
+COPY dist/binaries/ldap-proxy-*-linux-arm64 /usr/bin/ldap-proxy

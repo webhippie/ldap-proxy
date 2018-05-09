@@ -15,52 +15,92 @@
 		<link rel="stylesheet" href="{{ .Root }}/assets/proxy.css" />
 	</head>
 	<body>
-		<div class="uk-flex uk-flex-center">
+		<div class="uk-height-1-1 uk-flex uk-flex-center uk-flex-middle">
 			<div class="uk-card uk-card-default uk-card-hover uk-card-body">
-				<h3 class="uk-heading-line">
-					<span>
-						{{ .Title }}
-					</span>
-				</h3>
+				<h1 class="uk-card-title">
+					{{ .Title }}
+				</h1>
 
-				<div class="uk-alert-danger" uk-alert>
-					<a class="uk-alert-close" uk-close></a>
+				{{ if ne .Error "" }}
+					<div class="uk-alert-danger" uk-alert>
+						<p>
+							{{ .Error }}
+						</p>
+					</div>
+				{{ end }}
+
+				<div class="uk-padding uk-padding-remove-left uk-padding-remove-right">
+					<form class="uk-form-stacked" method="post" action="{{ .Root }}/auth">
+						<div class="uk-margin">
+							<label class="uk-form-label" for="username" hidden>
+								Username
+							</label>
+
+							<div class="uk-inline uk-width-1-1">
+								<span class="uk-form-icon" uk-icon="icon: user"></span>
+								<input class="uk-input" name="username" type="username"
+									placeholder="Username"
+									autofocus="autofocus"
+									autocapitalize="off"
+									autocorrect="off">
+							</div>
+						</div>
+
+						<div class="uk-margin">
+							<label class="uk-form-label" for="password" hidden>
+								Password
+							</label>
+
+							<div class="uk-inline uk-width-1-1">
+								<span class="uk-form-icon" uk-icon="icon: lock"></span>
+								<input class="uk-input" name="password" type="password"
+									placeholder="Password"
+									autocapitalize="off"
+									autocorrect="off">
+							</div>
+						</div>
+
+						<div class="uk-margin">
+							<button class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom">
+								Sign in
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<button
+					class="uk-position-bottom-right uk-padding-small"
+					uk-icon="icon: info"
+					uk-toggle="target: #info"
+					type="button"></button>
+			</div>
+		</div>
+
+		<div id="info" uk-modal>
+			<div class="uk-modal-dialog">
+				<div class="uk-modal-header">
+					<h2 class="uk-modal-title">
+						Information
+					</h2>
+				</div>
+
+				<div class="uk-modal-body" uk-overflow-auto>
+					<p>
+						<strong>
+							Copyright &copy; 2018 Thomas Boerger. All rights reserved. Made with ❤ in Germany.
+						</strong>
+					</p>
 
 					<p>
-						Incorrect username or password
+						This tool is powered by <a href="https://github.com/webhippie/ldap-proxy" target="_blank">LDAP Proxy</a> to provide a solid authentication for every web application. If you find any issue you can report it on <a href="https://github.com/webhippie/ldap-proxy/issues" target="_blank">our issue tracker</a>.
+					</p>
+
+					<p>
+						If you just got issues to authenticate for the requested service please get in touch with your administrator, I'm sure you know how to contact him.
 					</p>
 				</div>
 
-				<form class="uk-form-stacked" method="post" action="{{ .Root }}/login">
-					<div class="uk-margin">
-						<label class="uk-form-label" for="username">
-							Username
-						</label>
-						<div class="uk-form-controls">
-							<input class="uk-input" id="username" type="username"
-								autofocus="autofocus"
-								autocapitalize="off"
-								autocorrect="off">
-						</div>
-					</div>
-
-					<div class="uk-margin">
-						<label class="uk-form-label" for="password">
-							Password
-						</label>
-						<div class="uk-form-controls">
-							<input class="uk-input" type="password" id="password"
-								autocapitalize="off"
-								autocorrect="off">
-						</div>
-					</div>
-
-					<div class="uk-margin">
-						<button class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom">
-							Sign in
-						</button>
-					</div>
-				</form>
+				<button class="uk-modal-close-default" type="button" uk-close></button>
 			</div>
 		</div>
 
