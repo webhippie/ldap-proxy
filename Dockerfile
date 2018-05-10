@@ -20,4 +20,4 @@ RUN apk add --no-cache ca-certificates mailcap bash
 
 COPY assets /usr/share/ldap-proxy/
 COPY templates /usr/share/ldap-proxy/
-COPY dist/binaries/terrastate-*-linux-amd64 /usr/bin/terrastate
+COPY dist/binaries/ldap-proxy-*-linux-amd64 /usr/bin/ldap-proxy
