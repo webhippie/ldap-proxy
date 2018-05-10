@@ -20,7 +20,7 @@
   "config": {},
   "scripts": {
     "clean": "rimraf assets/",
-    "lint": "eslint ui/",
+    "lint": "eslint webpack.config.js ui/",
     "build": "NODE_ENV=production webpack -p",
     "watch": "NODE_ENV=development webpack -d -w",
     "test": "echo 'Needs to be integrated!'"

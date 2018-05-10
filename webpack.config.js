@@ -1,6 +1,6 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var Webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
+var Webpack = require('webpack')
 
 module.exports = {
   entry: {
@@ -11,8 +11,7 @@ module.exports = {
 
   output: {
     path: require('path').resolve(__dirname, 'assets'),
-    filename: 'proxy.js',
-    publicPath: '/ldap-proxy/assets/'
+    filename: 'proxy.js'
   },
 
   devtool: 'source-map',
@@ -67,7 +66,7 @@ module.exports = {
 
   vue: {
     loaders: {
-      css: ExtractTextPlugin.extract("css!less"),
+      css: ExtractTextPlugin.extract('css!less')
     }
   },
 
@@ -87,10 +86,10 @@ module.exports = {
     new Webpack.optimize.OccurenceOrderPlugin(),
     new Webpack.optimize.DedupePlugin()
   ]
-};
+}
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map';
+  module.exports.devtool = '#source-map'
 
   module.exports.plugins = (module.exports.plugins || []).concat([
     new Webpack.optimize.UglifyJsPlugin({
@@ -101,5 +100,5 @@ if (process.env.NODE_ENV === 'production') {
         semicolons: false
       }
     })
-  ]);
+  ])
 }
