@@ -3,79 +3,61 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"strings"
 
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/log/level"
+	"github.com/rs/zerolog/log"
 	"github.com/webhippie/ldap-proxy/pkg/config"
 	"gopkg.in/urfave/cli.v2"
 )
 
 // Health provides the sub-command to perform a health check.
-func Health() *cli.Command {
+func Health(cfg *config.Config) *cli.Command {
 	return &cli.Command{
-		Name:  "health",
-		Usage: "perform health checks for server",
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:        "server-addr",
-				Value:       "0.0.0.0:8080",
-				Usage:       "address to access the server",
-				EnvVars:     []string{"LDAP_PROXY_SERVER_ADDR"},
-				Destination: &config.Server.Addr,
-			},
+		Name:   "health",
+		Usage:  "perform health checks for service",
+		Flags:  healthFlags(cfg),
+		Action: healthAction(cfg),
+	}
+}
+
+func healthFlags(cfg *config.Config) []cli.Flag {
+	return []cli.Flag{
+		&cli.StringFlag{
+			Name:        "health-addr",
+			Value:       healthAddr,
+			Usage:       "health address for service",
+			EnvVars:     []string{"LDAP_PROXY_HEALTH_ADDR"},
+			Destination: &cfg.Server.Health,
 		},
-		Before: func(c *cli.Context) error {
-			return nil
-		},
-		Action: func(c *cli.Context) error {
-			logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
+	}
+}
 
-			switch strings.ToLower(config.LogLevel) {
-			case "debug":
-				logger = level.NewFilter(logger, level.AllowDebug())
-			case "warn":
-				logger = level.NewFilter(logger, level.AllowWarn())
-			case "error":
-				logger = level.NewFilter(logger, level.AllowError())
-			default:
-				logger = level.NewFilter(logger, level.AllowInfo())
-			}
+func healthAction(cfg *config.Config) cli.ActionFunc {
+	return func(c *cli.Context) error {
+		resp, err := http.Get(
+			fmt.Sprintf(
+				"http://%s/healthz",
+				cfg.Server.Health,
+			),
+		)
 
-			logger = log.WithPrefix(logger,
-				"app", c.App.Name,
-				"ts", log.DefaultTimestampUTC,
-			)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Msg("failed to request health check")
 
-			resp, err := http.Get(
-				fmt.Sprintf(
-					"http://%s/healthz",
-					config.Server.Addr,
-				),
-			)
+			return err
+		}
 
-			if err != nil {
-				level.Error(logger).Log(
-					"msg", "failed to request health check",
-					"err", err,
-				)
+		defer resp.Body.Close()
 
-				return err
-			}
+		if resp.StatusCode != 200 {
+			log.Error().
+				Err(err).
+				Msg("health seems to be in a bad state")
 
-			defer resp.Body.Close()
+			return err
+		}
 
-			if resp.StatusCode != 200 {
-				level.Error(logger).Log(
-					"msg", "health seems to be in a bad state",
-					"code", resp.StatusCode,
-				)
-
-				return err
-			}
-
-			return nil
-		},
+		return nil
 	}
 }

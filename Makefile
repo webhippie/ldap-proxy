@@ -2,12 +2,12 @@ NAME := ldap-proxy
 IMPORT := github.com/webhippie/$(NAME)
 DIST := dist
 
-EXECUTABLE := $(NAME)
-
 ifeq ($(OS), Windows_NT)
 	EXECUTABLE := $(NAME).exe
+	HAS_RETOOL := $(shell where retool)
 else
 	EXECUTABLE := $(NAME)
+	HAS_RETOOL := $(shell command -v retool)
 endif
 
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/ | grep -v /_tools/)
@@ -21,9 +21,9 @@ ifndef VERSION
 		VERSION ?= $(subst v,,$(DRONE_TAG))
 	else
 		ifneq ($(DRONE_BRANCH),)
-			VERSION ?= $(subst release/v,,$(DRONE_BRANCH))
+			VERSION ?= 0.0.0-$(subst /,,$(DRONE_BRANCH))
 		else
-			VERSION ?= master
+			VERSION ?= 0.0.0-master
 		endif
 	endif
 endif
@@ -36,7 +36,7 @@ ifndef DATE
 	DATE := $(shell date -u '+%Y%m%d')
 endif
 
-LDFLAGS += -s -w -X "$(IMPORT)/pkg/version.VersionDev=$(SHA)" -X "$(IMPORT)/pkg/version.VersionDate=$(DATE)"
+LDFLAGS += -s -w -X "$(IMPORT)/pkg/version.VersionString=$(VERSION)" -X "$(IMPORT)/pkg/version.VersionDev=$(SHA)" -X "$(IMPORT)/pkg/version.VersionDate=$(DATE)"
 
 .PHONY: all
 all: build
@@ -49,14 +49,10 @@ update:
 sync:
 	retool do dep ensure
 
-.PHONY: graph
-graph:
-	retool do dep status -dot | dot -T png -o docs/deps.png
-
 .PHONY: clean
 clean:
 	go clean -i ./...
-	rm -rf $(EXECUTABLE) $(DIST)
+	rm -rf bin/ $(DIST)/binaries $(DIST)/release
 
 .PHONY: fmt
 fmt:
@@ -76,20 +72,20 @@ lint:
 
 .PHONY: generate
 generate:
-	go generate $(GENERATE)
+	retool do go generate $(GENERATE)
 
 .PHONY: test
 test:
-	for PKG in $(PACKAGES); do go test -cover -coverprofile $$GOPATH/src/$$PKG/coverage.out $$PKG || exit 1; done;
+	retool do goverage -v -coverprofile coverage.out $(PACKAGES)
 
 .PHONY: install
 install: $(SOURCES)
 	go install -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' ./cmd/$(NAME)
 
 .PHONY: build
-build: $(EXECUTABLE)
+build: bin/$(EXECUTABLE)
 
-$(EXECUTABLE): $(SOURCES)
+bin/$(EXECUTABLE): $(SOURCES)
 	go build -i -v -tags '$(TAGS)' -ldflags '$(LDFLAGS)' -o $@ ./cmd/$(NAME)
 
 .PHONY: release
@@ -101,32 +97,29 @@ release-dirs:
 
 .PHONY: release-windows
 release-windows:
-	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		go get -u github.com/karalabe/xgo; \
-	fi
-	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'windows/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 ifeq ($(CI),drone)
+	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'windows/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 	mv /build/* $(DIST)/binaries
+else
+	retool do xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'windows/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 endif
 
 .PHONY: release-linux
 release-linux:
-	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		go get -u github.com/karalabe/xgo; \
-	fi
-	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'linux/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 ifeq ($(CI),drone)
+	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'linux/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 	mv /build/* $(DIST)/binaries
+else
+	retool do xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'linux/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 endif
 
 .PHONY: release-darwin
 release-darwin:
-	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		go get -u github.com/karalabe/xgo; \
-	fi
-	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'darwin/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 ifeq ($(CI),drone)
+	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'darwin/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 	mv /build/* $(DIST)/binaries
+else
+	retool do xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '$(LDFLAGS)' -targets 'darwin/*' -out $(EXECUTABLE)-$(VERSION)  ./cmd/$(NAME)
 endif
 
 .PHONY: release-copy
@@ -140,7 +133,9 @@ release-check:
 .PHONY: publish
 publish: release
 
-HAS_RETOOL := $(shell command -v retool)
+.PHONY: docs
+docs:
+	hugo -s docs/
 
 .PHONY: retool
 retool:

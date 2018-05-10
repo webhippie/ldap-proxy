@@ -24,9 +24,18 @@ _testmain.go
 *.prof
 
 coverage.out
-
 .env
 
+/_tools
+/vendor
 /dist
-/ldap-proxy
+/bin
+/storage
 /node_modules
+/assets
+
+/pkg/templates/ab0x.go
+/pkg/assets/ab0x.go
+
+/docs/public
+/tmp

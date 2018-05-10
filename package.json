@@ -2,7 +2,7 @@
   "private": true,
   "name": "ldap-proxy",
   "version": "0.1.0",
-  "description": "Proxy for authentication via LDAP",
+  "description": "proxy for authentication via ldap",
   "homepage": "https://github.com/webhippie/ldap-proxy#readme",
   "license": "",
   "author": {
@@ -51,7 +51,7 @@
   "dependencies": {
     "babel-runtime": "^6.20.0",
     "jquery": "^3.2.1",
-    "uikit": "^3.0.0-beta.22"
+    "uikit": "^3.0.0-beta.25"
   },
   "keywords": [
     "proxy",
