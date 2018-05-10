@@ -2,7 +2,7 @@
 
 [![Build Status](http://github.dronehippie.de/api/badges/webhippie/ldap-proxy/status.svg)](http://github.dronehippie.de/webhippie/ldap-proxy)
 [![Stories in Ready](https://badge.waffle.io/webhippie/ldap-proxy.svg?label=ready&title=Ready)](http://waffle.io/webhippie/ldap-proxy)
-[![Join the Matrix chat at https://matrix.to/#/#webhippie:matrix.org](https://img.shields.io/badge/matrix-%23gomematic%3Amatrix.org-7bc9a4.svg)](https://matrix.to/#/#webhippie:matrix.org)
+[![Join the Matrix chat at https://matrix.to/#/#webhippie:matrix.org](https://img.shields.io/badge/matrix-%23webhippie%3Amatrix.org-7bc9a4.svg)](https://matrix.to/#/#webhippie:matrix.org)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4d3a80070282417fab062d1df363f7e2)](https://www.codacy.com/app/webhippie/ldap-proxy?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=webhippie/ldap-proxy&amp;utm_campaign=Badge_Grade)
 [![Go Doc](https://godoc.org/github.com/webhippie/ldap-proxy?status.svg)](http://godoc.org/github.com/webhippie/ldap-proxy)
 [![Go Report](https://goreportcard.com/badge/github.com/webhippie/ldap-proxy)](https://goreportcard.com/report/github.com/webhippie/ldap-proxy)
