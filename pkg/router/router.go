@@ -58,6 +58,7 @@ func Load(cfg *config.Config, proxy http.Handler) http.Handler {
 	return mux
 }
 
+// Status initializes the routing of metrics and healtchecks.
 func Status(cfg *config.Config) http.Handler {
 	mux := chi.NewRouter()
 
@@ -96,6 +97,7 @@ func Status(cfg *config.Config) http.Handler {
 	return mux
 }
 
+// Redirect handles HTTP to HTTPS redirecting.
 func Redirect(cfg *config.Config) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		parsed, err := url.Parse(
